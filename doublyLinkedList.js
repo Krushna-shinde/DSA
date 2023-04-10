@@ -12,111 +12,88 @@ class Node {
       this.tail = null;
       this.size = 0;
     }
-    //add value in DoublyLinked list
-    addValue(value){ 
-        let newNode = new Node(value);
-        let latest;
-        if(this.head == null){
-            this.head = newNode;
-            this.tail = newNode;
-        }else {
-            latest = this.head 
-            while(latest.next){
-                latest = latest.next;
-            }
-            latest.next = newNode;
-            newNode.tail = latest.next;
-       }
-       this.size++;
+  
+    // add value to the end of the list
+    addValue(value) {
+      let newNode = new Node(value);
+      if (this.head === null) {
+        this.head = newNode;
+        this.tail = newNode;
+      } else {
+        this.tail.next = newNode;
+        newNode.prev = this.tail;
+        this.tail = newNode;
+      }
+      this.size++;
     }
-    isEmpty(){
-        if(this.size==0){
-            return true;
-        } 
-        else {
-        return false;
-        }
+  
+    isEmpty() {
+      return this.size === 0;
     }
-    printOut(){
-        let abc=this.head;
-        while(abc){
-            console.log(abc.item);
-            abc = abc.next;
-     }
+  
+    printOut() {
+      let current = this.head;
+      while (current !== null) {
+        console.log(current.item);
+        current = current.next;
+      }
     }
-    //  //to find index of particular value
-    printIndex(value){  
-        let xyz = this.head;
-        let indexCount=0;
-        if(xyz == null)   //no nodes
-        {
-              return -1;
+  
+    // find the index of a value in the list
+    printIndex(value) {
+      let current = this.head;
+      let index = 0;
+      while (current !== null) {
+        if (current.item === value) {
+          return index;
         }
-        else{
-        while(xyz != null){   //nodes are present
-                if(value == xyz.item)
-                {
-                    return indexCount;
-                }
-            xyz = xyz.next;
-            indexCount++;
+        current = current.next;
+        index++;
+      }
+      return -1; // value not found
+    }
+  
+    // delete a node with the given value
+    deleteNode(value) {
+      let current = this.head;
+      let prev = null;
+  
+      // iterate over the list to find the node to delete
+      while (current !== null) {
+        if (current.item === value) {
+          if (current === this.head) {
+            this.head = current.next;
+            if (this.head !== null) {
+              this.head.prev = null;
+            } else { // list is empty
+              this.tail = null;
             }
-            return -1;
-            }  
-        }  
-        // delete the value which i given by the user
-        deleteNode(value){
-            let mno = this.head;
-            let prev=null;
-            if(mno == null)
-            {
-                return -1; //since doubly linked list is already empty
-            }
-            else{
-                while(mno != null){
-                    if(value == mno.item)
-                    {
-                     if(mno == this.head)   // weather the given value is the head or not 
-                    {
-                     this.head = mno.next;  // 2nd node wll become the head 
-                    let a = mno.next;
-                    a = null;  // 2nd node's prev pointer as null
-                    } else if(mno == this.tail)
-                    {
-                        this.tail = mno.prev ;
-                        mno.prev.next = null;
-                    }
-                     else{
-                        prev.next = mno.next; // current node is deleted
-                        let c = mno.next;
-                        c.prev = mno.prev;
-                    }
-                }
-                 prev = mno;  // assigning a node to it.
-                    mno = mno.next;
-                }
-                return -1; //since linked list does not have the given value hence nothing to delete
-            }
-        
+          } else if (current === this.tail) {
+            this.tail = current.prev;
+            this.tail.next = null;
+          } else {
+            prev.next = current.next;
+            current.next.prev = prev;
+          }
+          this.size--;
+          return current.item;
         }
-
-} 
-let myList = new DoublyLinkedList();
-myList.addValue(5);
-myList.addValue(10);
-myList.addValue(15);
-console.log(myList.isEmpty());
-myList.printOut();
-console.log(myList.printIndex(15));
-console.log('====================');
-myList.deleteNode(15);
-myList.printOut();
-// console.log(myList.isEmpty());
-// myList.addValue(5);
-// myList.addValue(10);
-// myList.addValue(15);
-// console.log(myList.size);
-// 
-// 
-// 
-
+        prev = current;
+        current = current.next;
+      }
+      return -1; // value not found
+    }
+  }
+  
+  // test the implementation
+  let myList = new DoublyLinkedList();
+  myList.addValue(5);
+  myList.addValue(10);
+  myList.addValue(15);
+  console.log(myList.isEmpty()); // false
+  myList.printOut(); // 5 10 15
+  console.log(myList.printIndex(15)); // 2
+  console.log('====================');
+  myList.deleteNode(15);
+  myList.printOut(); // 5 10
+  
